@@ -1,4 +1,6 @@
-﻿using ConsoleApp1;
+﻿using System;
+using System.IO;
+using ConsoleApp1;
 
 var path = Environment.GetCommandLineArgs()[1];
 var newPath = Environment.GetCommandLineArgs()[2];
