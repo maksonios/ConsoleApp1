@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace ConsoleApp1;
+namespace SubtitleUtility;
 
 public static class SubtitleModifier
 {
