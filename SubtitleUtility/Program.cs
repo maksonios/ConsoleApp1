@@ -5,7 +5,8 @@ using SubtitleUtility;
 var path = Environment.GetCommandLineArgs()[1];
 var newPath = Environment.GetCommandLineArgs()[2];
 var shiftMs = Convert.ToInt32(Environment.GetCommandLineArgs()[3]);
+var subsNumering = Convert.ToBoolean(Environment.GetCommandLineArgs()[4]);
 
-var input = File.ReadAllText(path);
-var output = SubtitleModifier.ExecuteSubtitleShift(input, shiftMs);
-File.WriteAllText(newPath, output);
+var input = File.ReadAllLines(path);
+var output = SubtitleModifier.ExecuteSubtitleShift(input, shiftMs, subsNumering);
+File.WriteAllLines(newPath, output);
