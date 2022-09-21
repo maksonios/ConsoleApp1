@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,10 +6,15 @@ namespace SubtitleUtility;
 
 public static class SubtitleModifier
 {
+    private const string DefaultTimeIntervalDelimiter = "-->";
     private const string TimeFormat = @"hh\:mm\:ss\,fff";
     private static readonly Regex TimeRegex = new(@"(\d\d):(\d\d):(\d\d),(\d\d\d)");
     
-    public static string ExecuteSubtitleShift(string[] source, int shiftMs, bool isSubtitleNumberingEnabled = true)
+    public static string ExecuteSubtitleShift(string[] source,
+                                              int shiftMs, 
+                                              string sourceTimeIntervalDelimiter = DefaultTimeIntervalDelimiter, // TODO 
+                                              string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter, // TODO
+                                              bool isSubtitleNumberingEnabled = true)
     {
         var newStr = new StringBuilder();
         if (!isSubtitleNumberingEnabled)
