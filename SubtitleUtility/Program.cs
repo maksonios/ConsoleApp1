@@ -9,8 +9,3 @@ var input = File.ReadAllText(path);
 var output = SubtitleModifier.ExecuteSubtitleShift(input, shiftMs, isSubtitleNumberingEnabled: subsNumering);
 File.WriteAllText(newPath, output);
 
-
-var order = new Order(101, 10001);
-
-var id = order.Id;
-var createdDate = order.CreatedDate;
