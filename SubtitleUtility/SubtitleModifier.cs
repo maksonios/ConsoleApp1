@@ -50,11 +50,4 @@ public static class SubtitleModifier
         t += new TimeSpan(0, 0, 0, 0, shiftMs);
         return t.ToString(TimeFormat);
     }
-    
-    /*public static void ExecuteSubtitleShift(string path, string newPath, int shiftMs)
-    {
-        var input = File.ReadAllText(path);
-        input = TimeRegex.Replace(input, m => AddTime(m, shiftMs));
-        File.WriteAllText(newPath, input);
-    }*/
 }
