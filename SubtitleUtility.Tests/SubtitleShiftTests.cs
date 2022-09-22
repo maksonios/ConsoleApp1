@@ -77,6 +77,5 @@ public class SubtitleShiftTests
     [Test]
     public void ExecuteSubtitleShift_ShouldEnableSubtitleNumeration_WhenBoolParamIsTrue()
     {
-        var expecetedValue 
     }
 }
