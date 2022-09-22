@@ -163,10 +163,6 @@ PublishScripts/
 *.nuget.props
 *.nuget.targets
 
-# ignore all logs
-*.log
-df
-
 # Microsoft Azure Build Output
 csx/
 *.build.csdef
