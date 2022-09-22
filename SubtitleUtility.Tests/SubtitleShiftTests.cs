@@ -73,4 +73,10 @@ public class SubtitleShiftTests
 
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
+
+    [Test]
+    public void ExecuteSubtitleShift_ShouldEnableSubtitleNumeration_WhenBoolParamIsTrue()
+    {
+        var expecetedValue 
+    }
 }

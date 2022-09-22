@@ -1,0 +1,89 @@
+[33mcommit f708ae3bd2d249a91e8d67432fb7f0353a463a6b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Thu Sep 22 00:09:05 2022 +0300
+
+    Remove garbage
+
+[33mcommit 27a850b71c3393a7caf4a349dec1aa7235482051[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Thu Sep 22 00:00:45 2022 +0300
+
+    Add tests and TODO tasks
+
+[33mcommit 51b49cfffacdeb926eaf575a8b74a913022015a8[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Wed Sep 21 22:31:52 2022 +0300
+
+    Remove redundant code
+
+[33mcommit 400ea877d89c4972923a2f3a308d8d38d6d136dc[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Wed Sep 21 22:29:44 2022 +0300
+
+    Add new requirements
+
+[33mcommit ed17394dd756532848b04ed439c17584adadd567[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Wed Sep 21 03:24:01 2022 +0300
+
+    Add README.md
+
+[33mcommit c7bc0d7fbdcae3193fa90e4fe92b0a8801549431[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Wed Sep 21 02:05:18 2022 +0300
+
+    Add numbering parameter
+
+[33mcommit 73a5273fee05d210f1e5472bff6915c06e9db042[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Wed Sep 21 01:30:24 2022 +0300
+
+    Return to default
+
+[33mcommit 366c403a55afba8033c1eace0c0fba653db58c27[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Wed Sep 21 00:57:28 2022 +0300
+
+    Update
+
+[33mcommit 5bde07554cac4a58a130f107691ac49b67b7c038[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sun Sep 18 23:23:35 2022 +0300
+
+    edit gitignore
+
+[33mcommit 545ab2258903e671b3cd63d63a5a219a61cf2542[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sun Sep 18 23:21:49 2022 +0300
+
+    delete idea
+
+[33mcommit 468b022b07479229e5e36989a8fe5eda5f6945aa[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sun Sep 18 23:21:18 2022 +0300
+
+    rename project and solution
+
+[33mcommit f3590970a7479e0d49197d2f6cce45cf5febc738[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sun Sep 18 23:19:14 2022 +0300
+
+    remove garbage
+
+[33mcommit 4c9febc2b62f47d6cce95344a693636590232722[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sun Sep 18 23:16:05 2022 +0300
+
+    changes
+
+[33mcommit 1dc038863dbe244162f56670c2c41d21f2f6a875[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sun Sep 18 23:14:48 2022 +0300
+
+    remove garbage
+
+[33mcommit 2e1ca222cefbdeab32fcaec7c2cfa516c872c2ea[m
+Author: Max <prostakovmaksym@gmail.com>
+Date:   Sat Sep 17 03:32:12 2022 +0300
+
+    "first commit"
