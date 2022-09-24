@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
 namespace SubtitleUtility.Tests;

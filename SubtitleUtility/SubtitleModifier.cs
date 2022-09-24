@@ -54,21 +54,10 @@ public static class SubtitleModifier
     private static void ValidateTimeIntervalDelimiterConsistency(string input, string sourceTimeIntervalDelimiter)
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
-        for (int i = 0; i < source.Length-1; i++)
+        for (var i = 0; i < source.Length-1; i++)
         {
-            var result = Regex.IsMatch(source[i], TimeIntervalPattern);
-            if (result)
-            {
-                string delimiter = source[i].Substring(13, 3);
-                if (delimiter == sourceTimeIntervalDelimiter)
-                {
-                    continue;
-                }
-                else
-                {
-                    throw new InvalidDataException($"TimeIntervalDelimiterConsistency is not consistent across file. The subtitle line: #{i + 1}");
-                }
-            }
+            if (Regex.IsMatch(source[i], TimeIntervalPattern) && source[i].Substring(13, 3) != sourceTimeIntervalDelimiter)
+                throw new InvalidDataException($"TimeIntervalDelimiterConsistency is not consistent across file. The subtitle line: #{i + 1}");
         }
     }
 
