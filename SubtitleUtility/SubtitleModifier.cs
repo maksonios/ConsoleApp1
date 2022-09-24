@@ -8,7 +8,8 @@ public static class SubtitleModifier
 {
     private const string DefaultTimeIntervalDelimiter = "-->";
     private const string TimeFormat = @"hh\:mm\:ss\,fff";
-    private static readonly Regex TimeRegex = new(@"(\d\d):(\d\d):(\d\d),(\d\d\d)");
+    private static readonly Regex TimeRegex = new (TimeIntervalPattern);
+    private const string TimeIntervalPattern = @"(\d\d):(\d\d):(\d\d),(\d\d\d)";
     
     public static string ExecuteSubtitleShift(string input,
                                               int shiftMs, 
@@ -16,33 +17,34 @@ public static class SubtitleModifier
                                               string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter,
                                               bool isSubtitleNumberingEnabled = true)
     {
-        var source = Regex.Split(input, "\r\n|\r|\n");
 
         ValidateTimeIntervalDelimiterConsistency(input);
-        ReplaceTimeIntervalDelimiter(input, targetTimeIntervalDelimiter);
+        
+        var modifiedInput = ReplaceTimeIntervalDelimiter(input, targetTimeIntervalDelimiter);
         
         var newStr = new StringBuilder();
         if (!isSubtitleNumberingEnabled)
         {
-            string matchSymbol = "-->";
-            for (int i = 0; i < source.Length-1; i++)
+            for (int i = 0; i < modifiedInput.Length-1; i++)
             {
-                if (source[i+1].Contains(matchSymbol))
+                var temp = Regex.IsMatch(modifiedInput[i+1], TimeIntervalPattern);
+                if (temp)
                 {
-                    var timeline=TimeRegex.Replace(source[i+1], m => AddTime(m, shiftMs));
+                    var timeline=TimeRegex.Replace(modifiedInput[i+1], m => AddTime(m, shiftMs));
                     newStr.AppendLine(timeline);
                     continue;
                 }
-                if (source[i].Contains(matchSymbol))
+                var temp1 = Regex.IsMatch(modifiedInput[i], TimeIntervalPattern);
+                if (temp1)
                 {
                     continue;
                 }
-                newStr.AppendLine(source[i]);
+                newStr.AppendLine(modifiedInput[i]);
             }
         }
         else
         {
-            var result = TimeRegex.Replace(string.Join(Environment.NewLine, source), m => AddTime(m, shiftMs));
+            var result = TimeRegex.Replace(string.Join(Environment.NewLine, modifiedInput), m => AddTime(m, shiftMs));
             return result;
         }
 
@@ -54,7 +56,8 @@ public static class SubtitleModifier
         var source = Regex.Split(input, "\r\n|\r|\n");
         for (int i = 0; i < source.Length-1; i++)
         {
-            if (source[i].IndexOf(":") == 2)
+            var result = Regex.IsMatch(source[i], TimeIntervalPattern);
+            if (result)
             {
                 string delimiter = source[i].Substring(13, 3);
                 if (delimiter == DefaultTimeIntervalDelimiter)
@@ -69,20 +72,19 @@ public static class SubtitleModifier
         }
     }
 
-    private static string ReplaceTimeIntervalDelimiter(string input, string targetTimeIntervalDelimiter)
+    private static string[] ReplaceTimeIntervalDelimiter(string input, string targetTimeIntervalDelimiter)
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
-        for (int i = 0; i < source.Length - 1; i++)
+        for (int i = 0; i < source.Length-1; i++)
         {
-            if (source[i].IndexOf(":") == 2)
+            if (Regex.IsMatch(source[i], TimeIntervalPattern))
             {
-                string delimeter = source[i].Substring(13, 3);
-                string temp = source[i].Replace(delimeter, targetTimeIntervalDelimiter);
+                var delimeter = source[i].Substring(13, 3);
+                var temp = source[i].Replace(delimeter, targetTimeIntervalDelimiter);
                 source[i] = temp;
             }
         }
-
-        return source.ToString();
+        return source;
     }
 
     private static string AddTime(Match m, int shiftMs)
