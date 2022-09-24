@@ -18,7 +18,7 @@ public static class SubtitleModifier
                                               bool isSubtitleNumberingEnabled = true)
     {
 
-        ValidateTimeIntervalDelimiterConsistency(input);
+        ValidateTimeIntervalDelimiterConsistency(input, sourceTimeIntervalDelimiter);
         
         var modifiedInput = ReplaceTimeIntervalDelimiter(input, targetTimeIntervalDelimiter);
         
@@ -51,7 +51,7 @@ public static class SubtitleModifier
         return newStr.ToString();
     }
 
-    private static void ValidateTimeIntervalDelimiterConsistency(string input)
+    private static void ValidateTimeIntervalDelimiterConsistency(string input, string sourceTimeIntervalDelimiter)
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
         for (int i = 0; i < source.Length-1; i++)
@@ -60,7 +60,7 @@ public static class SubtitleModifier
             if (result)
             {
                 string delimiter = source[i].Substring(13, 3);
-                if (delimiter == DefaultTimeIntervalDelimiter)
+                if (delimiter == sourceTimeIntervalDelimiter)
                 {
                     continue;
                 }
