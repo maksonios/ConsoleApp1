@@ -56,7 +56,7 @@ public static class SubtitleModifier
         var source = Regex.Split(input, "\r\n|\r|\n");
         for (var i = 0; i < source.Length-1; i++)
         {
-            if (Regex.IsMatch(source[i], TimeIntervalPattern) && source[i].Substring(13, 3) != sourceTimeIntervalDelimiter)
+            if (Regex.IsMatch(source[i], TimeIntervalPattern) && ParseDelimiter(source[i]) != sourceTimeIntervalDelimiter)
                 throw new InvalidDataException($"TimeIntervalDelimiterConsistency is not consistent across file. The subtitle line: #{i + 1}");
         }
     }
@@ -68,8 +68,8 @@ public static class SubtitleModifier
         {
             if (Regex.IsMatch(source[i], TimeIntervalPattern))
             {
-                var delimeter = source[i].Substring(13, 3);
-                var temp = source[i].Replace(delimeter, targetTimeIntervalDelimiter);
+                var delimiter = ParseDelimiter(source[i]);
+                var temp = source[i].Replace(delimiter, targetTimeIntervalDelimiter);
                 source[i] = temp;
             }
         }
@@ -82,4 +82,6 @@ public static class SubtitleModifier
         t += new TimeSpan(0, 0, 0, 0, shiftMs);
         return t.ToString(TimeFormat);
     }
+
+    private static string ParseDelimiter(string input) => input.Substring(13, 3);
 }
