@@ -17,7 +17,6 @@ public static class SubtitleModifier
                                               string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter,
                                               bool isSubtitleNumberingEnabled = true)
     {
-
         ValidateTimeIntervalDelimiterConsistency(input, sourceTimeIntervalDelimiter);
         
         var modifiedInput = ReplaceTimeIntervalDelimiter(input, targetTimeIntervalDelimiter);
