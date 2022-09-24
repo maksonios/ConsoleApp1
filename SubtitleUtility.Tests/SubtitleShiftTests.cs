@@ -99,7 +99,7 @@ public class SubtitleShiftTests
     }
     
     [Test]
-    public void ExecuteSubtitleShift_ShouldEnableSubtitleNumeration_WhenBoolParamIsFalse()
+    public void ExecuteSubtitleShift_ShouldDisableSubtitleNumeration_WhenBoolParamIsFalse()
     {
         var expectedValue = "00:02:24,896 --> 00:02:26,773" + Environment.NewLine + 
                             "Master Kaecilius." + Environment.NewLine + 
@@ -146,28 +146,28 @@ public class SubtitleShiftTests
     }
 
     [Test]
-    public void ExecuteSubtitleShift_ShouldReplaceTimeIntervalDelimiter_WhenParamAssigned()
+    public void ExecuteSubtitleShift_ShouldReplaceTimeIntervalDelimiter_WhenParamIsAssigned()
     {
         var expectedValue = "1" + Environment.NewLine + 
-                            "00:02:24,896 ==> 00:02:26,773" + Environment.NewLine + 
+                            "00:02:24,896 kurwa 00:02:26,773" + Environment.NewLine + 
                             "Master Kaecilius." + Environment.NewLine + 
                             "" + Environment.NewLine + 
                             "2" + Environment.NewLine + 
-                            "00:02:27,899 ==> 00:02:31,745" + Environment.NewLine + 
+                            "00:02:27,899 kurwa 00:02:31,745" + Environment.NewLine + 
                             "That ritual will bring you only sorrow." + Environment.NewLine + 
                             "" + Environment.NewLine + 
                             "3" + Environment.NewLine + 
-                            "00:03:07,730 ==> 00:03:08,947" + Environment.NewLine + 
+                            "00:03:07,730 kurwa 00:03:08,947" + Environment.NewLine + 
                             "Hypocrite!" + Environment.NewLine + 
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
-                            "00:05:05,347 ==> 00:05:06,690" + Environment.NewLine + 
+                            "00:05:05,347 kurwa 00:05:06,690" + Environment.NewLine + 
                             "Challenge round, Billy." + Environment.NewLine;
         
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
                                                                 -ShiftMs,
                                                                 DefaultTimeIntervalDelimiter,
-                                                                "==>");
+                                                                "kurwa");
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
     
