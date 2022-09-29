@@ -21,33 +21,32 @@ public static class SubtitleModifier
         
         var modifiedInput = ReplaceTimeIntervalDelimiter(input, targetTimeIntervalDelimiter);
         
-        var newStr = new StringBuilder();
         if (!isSubtitleNumberingEnabled)
         {
-            for (int i = 0; i < modifiedInput.Length-1; i++)
+            var newStr = new StringBuilder();
+            for (var i = 0; i < modifiedInput.Length-1; i++)
             {
-                var temp = Regex.IsMatch(modifiedInput[i+1], TimeIntervalPattern);
-                if (temp)
+                var isNextLineTimeInterval = Regex.IsMatch(modifiedInput[i+1], TimeIntervalPattern);
+                if (isNextLineTimeInterval)
+                    continue;
+
+                var isLineTimeInterval = Regex.IsMatch(modifiedInput[i], TimeIntervalPattern);
+                if (isLineTimeInterval)
                 {
-                    var timeline=TimeRegex.Replace(modifiedInput[i+1], m => AddTime(m, shiftMs));
+                    var timeline=TimeRegex.Replace(modifiedInput[i], m => AddTime(m, shiftMs));
                     newStr.AppendLine(timeline);
                     continue;
                 }
-                var temp1 = Regex.IsMatch(modifiedInput[i], TimeIntervalPattern);
-                if (temp1)
-                {
-                    continue;
-                }
+                
                 newStr.AppendLine(modifiedInput[i]);
             }
+            return newStr.ToString();
         }
         else
         {
             var result = TimeRegex.Replace(string.Join(Environment.NewLine, modifiedInput), m => AddTime(m, shiftMs));
             return result;
         }
-
-        return newStr.ToString();
     }
 
     private static void ValidateTimeIntervalDelimiterConsistency(string input, string sourceTimeIntervalDelimiter)
