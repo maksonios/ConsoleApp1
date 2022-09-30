@@ -23,7 +23,9 @@ public static class SubtitleModifier
         
         ReplaceTimeIntervalDelimiter(source, targetTimeIntervalDelimiter);
 
-        return !isSubtitleNumberingEnabled ? ExecuteSubtitleShiftWithoutNumeration(source, shiftMs) : ExecuteSubtitleShiftWithNumeration(source, shiftMs);
+        return !isSubtitleNumberingEnabled ?
+            ExecuteSubtitleShiftWithoutNumeration(source, shiftMs) :
+            ExecuteSubtitleShiftWithNumeration(source, shiftMs);
     }
 
     private static string ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs)
