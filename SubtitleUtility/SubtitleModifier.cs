@@ -17,41 +17,44 @@ public static class SubtitleModifier
                                               string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter,
                                               bool isSubtitleNumberingEnabled = true)
     {
-        ValidateTimeIntervalDelimiterConsistency(input, sourceTimeIntervalDelimiter);
-        
-        var modifiedInput = ReplaceTimeIntervalDelimiter(input, targetTimeIntervalDelimiter);
-        
-        if (!isSubtitleNumberingEnabled)
-        {
-            var newStr = new StringBuilder();
-            for (var i = 0; i < modifiedInput.Length-1; i++)
-            {
-                var isNextLineTimeInterval = Regex.IsMatch(modifiedInput[i+1], TimeIntervalPattern);
-                if (isNextLineTimeInterval)
-                    continue;
+        var source = Regex.Split(input, "\r\n|\r|\n");
 
-                var isLineTimeInterval = Regex.IsMatch(modifiedInput[i], TimeIntervalPattern);
-                if (isLineTimeInterval)
-                {
-                    var timeline=TimeRegex.Replace(modifiedInput[i], m => AddTime(m, shiftMs));
-                    newStr.AppendLine(timeline);
-                    continue;
-                }
-                
-                newStr.AppendLine(modifiedInput[i]);
-            }
-            return newStr.ToString();
-        }
-        else
-        {
-            var result = TimeRegex.Replace(string.Join(Environment.NewLine, modifiedInput), m => AddTime(m, shiftMs));
-            return result;
-        }
+        ValidateTimeIntervalDelimiterConsistency(source, sourceTimeIntervalDelimiter);
+        
+        ReplaceTimeIntervalDelimiter(source, targetTimeIntervalDelimiter);
+
+        return !isSubtitleNumberingEnabled ? ExecuteSubtitleShiftWithoutNumeration(source, shiftMs) : ExecuteSubtitleShiftWithNumeration(source, shiftMs);
     }
 
-    private static void ValidateTimeIntervalDelimiterConsistency(string input, string sourceTimeIntervalDelimiter)
+    private static string ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs)
     {
-        var source = Regex.Split(input, "\r\n|\r|\n");
+        var newStr = new StringBuilder();
+        for (var i = 0; i < source.Length-1; i++)
+        {
+            var isNextLineTimeInterval = Regex.IsMatch(source[i+1], TimeIntervalPattern);
+            if (isNextLineTimeInterval)
+                continue;
+
+            var isLineTimeInterval = Regex.IsMatch(source[i], TimeIntervalPattern);
+            if (isLineTimeInterval)
+            {
+                var timeline=TimeRegex.Replace(source[i], m => AddTime(m, shiftMs));
+                newStr.AppendLine(timeline);
+                continue;
+            }
+                
+            newStr.AppendLine(source[i]);
+        }
+        return newStr.ToString();
+    }
+
+    private static string ExecuteSubtitleShiftWithNumeration(string[] source, int shiftMs)
+    {
+        return TimeRegex.Replace(string.Join(Environment.NewLine, source), m => AddTime(m, shiftMs));
+    }
+
+    private static void ValidateTimeIntervalDelimiterConsistency(string[] source, string sourceTimeIntervalDelimiter)
+    {
         for (var i = 0; i < source.Length-1; i++)
         {
             if (Regex.IsMatch(source[i], TimeIntervalPattern) && ParseDelimiter(source[i]) != sourceTimeIntervalDelimiter)
@@ -59,9 +62,8 @@ public static class SubtitleModifier
         }
     }
 
-    private static string[] ReplaceTimeIntervalDelimiter(string input, string targetTimeIntervalDelimiter)
+    private static void ReplaceTimeIntervalDelimiter(string[] source, string targetTimeIntervalDelimiter)
     {
-        var source = Regex.Split(input, "\r\n|\r|\n");
         for (int i = 0; i < source.Length-1; i++)
         {
             if (Regex.IsMatch(source[i], TimeIntervalPattern))
@@ -71,7 +73,6 @@ public static class SubtitleModifier
                 source[i] = temp;
             }
         }
-        return source;
     }
 
     private static string AddTime(Match m, int shiftMs)
