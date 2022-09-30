@@ -31,22 +31,20 @@ public static class SubtitleModifier
     private static string ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs)
     {
         var newStr = new StringBuilder();
+        
         for (var i = 0; i < source.Length-1; i++)
         {
-            var isNextLineTimeInterval = Regex.IsMatch(source[i+1], TimeIntervalPattern);
-            if (isNextLineTimeInterval)
+            if (Regex.IsMatch(source[i+1], TimeIntervalPattern))
                 continue;
-
-            var isLineTimeInterval = Regex.IsMatch(source[i], TimeIntervalPattern);
-            if (isLineTimeInterval)
+            if (Regex.IsMatch(source[i], TimeIntervalPattern))
             {
-                var timeline=TimeRegex.Replace(source[i], m => AddTime(m, shiftMs));
-                newStr.AppendLine(timeline);
+                var timeLine = TimeRegex.Replace(source[i], m => AddTime(m, shiftMs));
+                newStr.AppendLine(timeLine);
                 continue;
             }
-                
             newStr.AppendLine(source[i]);
         }
+        
         return newStr.ToString();
     }
 
@@ -66,14 +64,12 @@ public static class SubtitleModifier
 
     private static void ReplaceTimeIntervalDelimiter(string[] source, string targetTimeIntervalDelimiter)
     {
-        for (int i = 0; i < source.Length-1; i++)
+        for (var i = 0; i < source.Length-1; i++)
         {
-            if (Regex.IsMatch(source[i], TimeIntervalPattern))
-            {
-                var delimiter = ParseDelimiter(source[i]);
-                var temp = source[i].Replace(delimiter, targetTimeIntervalDelimiter);
-                source[i] = temp;
-            }
+            if (!Regex.IsMatch(source[i], TimeIntervalPattern)) continue;
+            var delimiter = ParseDelimiter(source[i]);
+            var temp = source[i].Replace(delimiter, targetTimeIntervalDelimiter);
+            source[i] = temp;
         }
     }
 
