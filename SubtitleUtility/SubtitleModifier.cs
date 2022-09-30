@@ -23,34 +23,26 @@ public static class SubtitleModifier
         
         ReplaceTimeIntervalDelimiter(source, targetTimeIntervalDelimiter);
 
-        return !isSubtitleNumberingEnabled ?
-            ExecuteSubtitleShiftWithoutNumeration(source, shiftMs) :
-            ExecuteSubtitleShiftWithNumeration(source, shiftMs);
+        ExecuteSubtitleShiftWithoutNumeration(source, shiftMs, isSubtitleNumberingEnabled);
+
+        return string.Join(Environment.NewLine, source.Where(x => x != null));
     }
 
-    private static string ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs)
+    private static void ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs, bool isSubtitleNumberingEnabled)
     {
-        var newStr = new StringBuilder();
-        
         for (var i = 0; i < source.Length-1; i++)
         {
-            if (Regex.IsMatch(source[i+1], TimeIntervalPattern))
+            if (!isSubtitleNumberingEnabled && Regex.IsMatch(source[i + 1], TimeIntervalPattern))
+            {
+                source[i] = null!;
                 continue;
+            }
             if (Regex.IsMatch(source[i], TimeIntervalPattern))
             {
                 var timeLine = TimeRegex.Replace(source[i], m => AddTime(m, shiftMs));
-                newStr.AppendLine(timeLine);
-                continue;
+                source[i] = timeLine;
             }
-            newStr.AppendLine(source[i]);
         }
-        
-        return newStr.ToString();
-    }
-
-    private static string ExecuteSubtitleShiftWithNumeration(string[] source, int shiftMs)
-    {
-        return TimeRegex.Replace(string.Join(Environment.NewLine, source), m => AddTime(m, shiftMs));
     }
 
     private static void ValidateTimeIntervalDelimiterConsistency(string[] source, string sourceTimeIntervalDelimiter)
