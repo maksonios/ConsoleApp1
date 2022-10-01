@@ -24,8 +24,36 @@ public static class SubtitleModifier
         ReplaceTimeIntervalDelimiter(source, targetTimeIntervalDelimiter);
 
         ExecuteSubtitleShiftWithoutNumeration(source, shiftMs, isSubtitleNumberingEnabled);
-
+        
         return string.Join(Environment.NewLine, source.Where(x => x != null));
+    }
+
+    public static string SubtitleToCustomCase(string[] source, bool isUpperCase)
+    {
+        for (var i = 0; i < source.Length; i++)
+        {
+            switch (isUpperCase)
+            {
+                case true when Regex.IsMatch(source[i], TimeIntervalPattern):
+                    continue;
+                case true:
+                {
+                    var temp = source[i].ToUpper();
+                    source[i] = temp;
+                    break;
+                }
+                case false when Regex.IsMatch(source[i], TimeIntervalPattern):
+                    continue;
+                case false:
+                {
+                    var temp = source[i].ToLower();
+                    source[i] = temp;
+                    break;
+                }
+            }
+        }
+
+        return string.Join(Environment.NewLine, source);
     }
 
     private static void ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs, bool isSubtitleNumberingEnabled)
