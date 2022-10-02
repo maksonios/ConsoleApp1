@@ -38,7 +38,7 @@ public static class SubtitleModifier
         return string.Join(Environment.NewLine, source.Where(x => x != null));
     }
 
-    public static void SubtitleToCustomCase(string[] source, CaseSelection toUpper)
+    private static void SubtitleToCustomCase(string[] source, CaseSelection toUpper)
     {
         for (var i = 0; i < source.Length; i++)
         {
