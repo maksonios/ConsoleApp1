@@ -43,24 +43,16 @@ public static class SubtitleModifier
         {
             switch (toUpper)
             {
-                case CaseSelection.Upper when Regex.IsMatch(source[i], TimeIntervalPattern):
-                    continue;
-                case CaseSelection.Upper:
+                case CaseSelection.Upper when !IsTimeInterval(source[i]):
                 {
-                    var temp = source[i].ToUpper();
-                    source[i] = temp;
+                    source[i] = source[i].ToUpper();
                     break;
                 }
-                case CaseSelection.Lower when Regex.IsMatch(source[i], TimeIntervalPattern):
-                    continue;
-                case CaseSelection.Lower:
+                case CaseSelection.Lower when !IsTimeInterval(source[i]):
                 {
-                    var temp = source[i].ToLower();
-                    source[i] = temp;
+                    source[i] = source[i].ToLower();
                     break;
                 }
-                case CaseSelection.None:
-                    break;
             }
         }
     }
@@ -69,12 +61,12 @@ public static class SubtitleModifier
     {
         for (var i = 0; i < source.Length-1; i++)
         {
-            if (!isSubtitleNumberingEnabled && Regex.IsMatch(source[i + 1], TimeIntervalPattern))
+            if (!isSubtitleNumberingEnabled && IsTimeInterval(source[i+1]))
             {
                 source[i] = null!;
                 continue;
             }
-            if (Regex.IsMatch(source[i], TimeIntervalPattern))
+            if (IsTimeInterval(source[i]))
             {
                 var timeLine = TimeRegex.Replace(source[i], m => AddTime(m, shiftMs));
                 source[i] = timeLine;
@@ -86,7 +78,7 @@ public static class SubtitleModifier
     {
         for (var i = 0; i < source.Length-1; i++)
         {
-            if (Regex.IsMatch(source[i], TimeIntervalPattern) && ParseDelimiter(source[i]) != sourceTimeIntervalDelimiter)
+            if (IsTimeInterval(source[i]) && ParseDelimiter(source[i]) != sourceTimeIntervalDelimiter)
                 throw new InvalidDataException($"TimeIntervalDelimiterConsistency is not consistent across file. The subtitle line: #{i + 1}");
         }
     }
@@ -95,7 +87,8 @@ public static class SubtitleModifier
     {
         for (var i = 0; i < source.Length-1; i++)
         {
-            if (!Regex.IsMatch(source[i], TimeIntervalPattern)) continue;
+            if (!IsTimeInterval(source[i]))
+                continue;
             var delimiter = ParseDelimiter(source[i]);
             var temp = source[i].Replace(delimiter, targetTimeIntervalDelimiter);
             source[i] = temp;
@@ -107,6 +100,11 @@ public static class SubtitleModifier
         var t = TimeSpan.ParseExact(m.Value, TimeFormat, CultureInfo.InvariantCulture);
         t += new TimeSpan(0, 0, 0, 0, shiftMs);
         return t.ToString(TimeFormat);
+    }
+
+    private static bool IsTimeInterval(string input)
+    {
+        return Regex.IsMatch(input, TimeIntervalPattern);
     }
 
     private static string ParseDelimiter(string input) => input.Substring(13, 3);
