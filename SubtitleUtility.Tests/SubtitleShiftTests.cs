@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
 namespace SubtitleUtility.Tests;
@@ -194,7 +193,9 @@ public class SubtitleShiftTests
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
                                                                 0,
                                                                 DefaultTimeIntervalDelimiter,
-                                                                "kurwa");
+                                                                "kurwa",
+                                                                true,
+                                                                SubtitleModifier.CaseSelection.Upper);
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
     
@@ -220,12 +221,14 @@ public class SubtitleShiftTests
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
                                                                 0,
                                                                 DefaultTimeIntervalDelimiter,
-                                                                "KURWA");
+                                                                "KURWA",
+                                                                true,
+                                                                SubtitleModifier.CaseSelection.Lower);
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
 
     [Test]
-    public void ExecuteSubtitleShift_ShouldntConvertStringToAnyCase()
+    public void ExecuteSubtitleShift_ShouldNotConvertStringToAnyCase()
     {
         var expectedValue = Input;
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, 0);
