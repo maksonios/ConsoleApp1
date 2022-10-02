@@ -25,7 +25,6 @@ public class SubtitleShiftTests
     private const int ShiftMs = 500;
     private const bool IsNumerationEnabled = true;
     private const string DefaultTimeIntervalDelimiter = "-->";
-    private const bool IsUpperCase = true;
 
     [Test]
     public void ExecuteSubtitleShift_ShouldShiftSubtitlesForward_WhenShiftParamIsPositive()
@@ -190,10 +189,12 @@ public class SubtitleShiftTests
                             "4" + Environment.NewLine + 
                             "00:05:05,847 kurwa 00:05:07,190" + Environment.NewLine + 
                             "CHALLENGE ROUND, BILLY." + Environment.NewLine;
+        
 
-        var source = Regex.Split(expectedValue, "\r\n|\r|\n");
-
-        var actualValue = SubtitleModifier.SubtitleToCustomCase(source, IsUpperCase);
+        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
+                                                                0,
+                                                                DefaultTimeIntervalDelimiter,
+                                                                "kurwa");
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
     
@@ -201,25 +202,33 @@ public class SubtitleShiftTests
     public void ExecuteSubtitleShift_ShouldConvertStringToLowerCase()
     {
         var expectedValue = "1" + Environment.NewLine + 
-                            "00:02:25,396 --> 00:02:27,273" + Environment.NewLine + 
+                            "00:02:25,396 KURWA 00:02:27,273" + Environment.NewLine + 
                             "master kaecilius." + Environment.NewLine + 
                             "" + Environment.NewLine + 
                             "2" + Environment.NewLine + 
-                            "00:02:28,399 --> 00:02:32,245" + Environment.NewLine + 
+                            "00:02:28,399 KURWA 00:02:32,245" + Environment.NewLine + 
                             "that ritual will bring you only sorrow." + Environment.NewLine + 
                             "" + Environment.NewLine + 
                             "3" + Environment.NewLine + 
-                            "00:03:08,230 --> 00:03:09,447" + Environment.NewLine + 
+                            "00:03:08,230 KURWA 00:03:09,447" + Environment.NewLine + 
                             "hypocrite!" + Environment.NewLine + 
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
-                            "00:05:05,847 --> 00:05:07,190" + Environment.NewLine + 
+                            "00:05:05,847 KURWA 00:05:07,190" + Environment.NewLine + 
                             "challenge round, billy." + Environment.NewLine;
         
-        var source = Regex.Split(Input, "\r\n|\r|\n");
-
-        var actualValue = SubtitleModifier.SubtitleToCustomCase(source, !IsUpperCase);
+        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
+                                                                0,
+                                                                DefaultTimeIntervalDelimiter,
+                                                                "KURWA");
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
-    
+
+    [Test]
+    public void ExecuteSubtitleShift_ShouldntConvertStringToAnyCase()
+    {
+        var expectedValue = Input;
+        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, 0);
+        actualValue.Should().BeEquivalentTo(expectedValue);
+    }
 }

@@ -10,12 +10,20 @@ public static class SubtitleModifier
     private const string TimeFormat = @"hh\:mm\:ss\,fff";
     private static readonly Regex TimeRegex = new (TimeIntervalPattern);
     private const string TimeIntervalPattern = @"(\d\d):(\d\d):(\d\d),(\d\d\d)";
+
+    public enum CaseSelection
+    {
+        Upper,
+        Lower,
+        None
+    }
     
     public static string ExecuteSubtitleShift(string input,
                                               int shiftMs, 
                                               string sourceTimeIntervalDelimiter = DefaultTimeIntervalDelimiter, 
                                               string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter,
-                                              bool isSubtitleNumberingEnabled = true)
+                                              bool isSubtitleNumberingEnabled = true,
+                                              CaseSelection variable = CaseSelection.None)
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
 
@@ -25,35 +33,37 @@ public static class SubtitleModifier
 
         ExecuteSubtitleShiftWithoutNumeration(source, shiftMs, isSubtitleNumberingEnabled);
         
+        SubtitleToCustomCase(source, variable);
+
         return string.Join(Environment.NewLine, source.Where(x => x != null));
     }
 
-    public static string SubtitleToCustomCase(string[] source, bool isUpperCase)
+    public static void SubtitleToCustomCase(string[] source, CaseSelection toUpper)
     {
         for (var i = 0; i < source.Length; i++)
         {
-            switch (isUpperCase)
+            switch (toUpper)
             {
-                case true when Regex.IsMatch(source[i], TimeIntervalPattern):
+                case CaseSelection.Upper when Regex.IsMatch(source[i], TimeIntervalPattern):
                     continue;
-                case true:
+                case CaseSelection.Upper:
                 {
                     var temp = source[i].ToUpper();
                     source[i] = temp;
                     break;
                 }
-                case false when Regex.IsMatch(source[i], TimeIntervalPattern):
+                case CaseSelection.Lower when Regex.IsMatch(source[i], TimeIntervalPattern):
                     continue;
-                case false:
+                case CaseSelection.Lower:
                 {
                     var temp = source[i].ToLower();
                     source[i] = temp;
                     break;
                 }
+                case CaseSelection.None:
+                    break;
             }
         }
-
-        return string.Join(Environment.NewLine, source);
     }
 
     private static void ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs, bool isSubtitleNumberingEnabled)
