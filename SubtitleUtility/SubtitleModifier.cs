@@ -16,13 +16,15 @@ public static class SubtitleModifier
         Lower,
         None
     }
-    
+
     public static string ExecuteSubtitleShift(string input,
-                                              int shiftMs, 
+                                              int shiftMs,
                                               string sourceTimeIntervalDelimiter = DefaultTimeIntervalDelimiter, 
                                               string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter,
                                               bool isSubtitleNumberingEnabled = true,
-                                              CaseSelection variable = CaseSelection.None)
+                                              CaseSelection variable = CaseSelection.None,
+                                              string startTime = "00:00:00,000",
+                                              string endTime = "20:59:59,999")
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
 
@@ -33,8 +35,41 @@ public static class SubtitleModifier
         ExecuteSubtitleShiftWithoutNumeration(source, shiftMs, isSubtitleNumberingEnabled);
         
         SubtitleToCustomCase(source, variable);
+        
+        source = OutputSelectedTimeCodes(source, startTime, endTime);
 
         return string.Join(Environment.NewLine, source.Where(x => x != null));
+    }
+
+    private static string[] OutputSelectedTimeCodes(string[] source, string startTime, string endTime)
+    {
+        int startLineIndex = -1;
+        int endLineIndex = -1;
+        for (var i = 0; i < source.Length-1; i++)
+        {
+            if (IsTimeInterval(source[i]) && ParseTimeLine(startTime) >= ParseTimeLine(source[i].Substring(0, 12)))
+            {
+                startLineIndex = i-1;
+            }
+    
+            if (IsTimeInterval(source[i]) && ParseTimeLine(endTime) <= ParseTimeLine(source[i].Substring(17,12)))
+            {
+                endLineIndex = i+2;
+                break;
+            }
+        }
+
+        if (startLineIndex == -1)
+            startLineIndex = 0;
+        if (endLineIndex == -1)
+            endLineIndex = source.Length - 1;
+        
+        var length = endLineIndex - startLineIndex;
+        
+        var newSource = new string[length];
+        Array.Copy(source, startLineIndex, newSource, 0, length);
+        
+        return newSource;
     }
 
     private static void SubtitleToCustomCase(string[] source, CaseSelection toUpper)
@@ -108,4 +143,17 @@ public static class SubtitleModifier
     }
 
     private static string ParseDelimiter(string input) => input.Substring(13, 3);
+
+    private static TimeSpan ParseTimeLine(string input)
+    {
+        try
+        {
+            return TimeSpan.ParseExact(input, TimeFormat, CultureInfo.InvariantCulture);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

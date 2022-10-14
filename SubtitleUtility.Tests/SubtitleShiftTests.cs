@@ -42,7 +42,7 @@ public class SubtitleShiftTests
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
                             "00:05:06,347 --> 00:05:07,690" + Environment.NewLine + 
-                            "Challenge round, Billy." + Environment.NewLine;
+                            "Challenge round, Billy.";
 
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, ShiftMs);
 
@@ -66,7 +66,7 @@ public class SubtitleShiftTests
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
                             "00:05:05,347 --> 00:05:06,690" + Environment.NewLine + 
-                            "Challenge round, Billy." + Environment.NewLine;
+                            "Challenge round, Billy.";
 
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, -ShiftMs);
 
@@ -90,7 +90,7 @@ public class SubtitleShiftTests
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
                             "00:05:05,347 --> 00:05:06,690" + Environment.NewLine + 
-                            "Challenge round, Billy." + Environment.NewLine;
+                            "Challenge round, Billy.";
 
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, -ShiftMs);
 
@@ -110,7 +110,7 @@ public class SubtitleShiftTests
                             "Hypocrite!" + Environment.NewLine + 
                             "" + Environment.NewLine +
                             "00:05:05,347 --> 00:05:06,690" + Environment.NewLine + 
-                            "Challenge round, Billy." + Environment.NewLine; 
+                            "Challenge round, Billy."; 
 
 
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
@@ -139,7 +139,7 @@ public class SubtitleShiftTests
                     "" + Environment.NewLine +
                     "4" + Environment.NewLine +
                     "00:05:05,347 --> 00:05:06,690" + Environment.NewLine +
-                    "Challenge round, Billy." + Environment.NewLine;
+                    "Challenge round, Billy.";
         
         Assert.Throws<InvalidDataException>(() => SubtitleModifier.ExecuteSubtitleShift(value, -ShiftMs));
     }
@@ -161,7 +161,7 @@ public class SubtitleShiftTests
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
                             "00:05:05,347 kurwa 00:05:06,690" + Environment.NewLine + 
-                            "Challenge round, Billy." + Environment.NewLine;
+                            "Challenge round, Billy.";
         
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
                                                                 -ShiftMs,
@@ -187,7 +187,7 @@ public class SubtitleShiftTests
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
                             "00:05:05,847 kurwa 00:05:07,190" + Environment.NewLine + 
-                            "CHALLENGE ROUND, BILLY." + Environment.NewLine;
+                            "CHALLENGE ROUND, BILLY.";
         
 
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
@@ -216,7 +216,7 @@ public class SubtitleShiftTests
                             "" + Environment.NewLine + 
                             "4" + Environment.NewLine + 
                             "00:05:05,847 KURWA 00:05:07,190" + Environment.NewLine + 
-                            "challenge round, billy." + Environment.NewLine;
+                            "challenge round, billy.";
         
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
                                                                 0,
@@ -234,4 +234,39 @@ public class SubtitleShiftTests
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, 0);
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
+    
+    [Test]
+    public void ExecuteSubtitleShift_ShouldCutRedundantTimeCodes()
+    {
+        var input = File.ReadAllText(@"C:\Users\Maksym\Desktop\temp1\Doctor.Strange.2016.720p.BluRay.x264.[YTS.MX]-English.srt");
+
+        var expectedValue = "23" + Environment.NewLine +
+                            "00:05:48,932 --> 00:05:50,149" + Environment.NewLine +
+                            "Oh, I got this, Stephen." + Environment.NewLine +
+                            "" + Environment.NewLine +
+                            "24" + Environment.NewLine +
+                            "00:05:50,225 --> 00:05:52,102" + Environment.NewLine +
+                            "You've done your bit." + Environment.NewLine +
+                            "Go ahead. We'll close up." + Environment.NewLine +
+                            "" + Environment.NewLine +
+                            "25" + Environment.NewLine +
+                            "00:05:53,186 --> 00:05:54,187" + Environment.NewLine +
+                            "What is it?" + Environment.NewLine +
+                            "" + Environment.NewLine +
+                            "26" + Environment.NewLine +
+                            "00:05:54,271 --> 00:05:55,443" + Environment.NewLine +
+                            "GSW.";
+
+        var actualValue = SubtitleModifier.ExecuteSubtitleShift(input,
+                                                                0,
+                                                                DefaultTimeIntervalDelimiter,
+                                                                DefaultTimeIntervalDelimiter,
+                                                                true,
+                                                                SubtitleModifier.CaseSelection.None,
+                                                                "00:05:48,932",
+                                                                "00:05:55,443");
+
+        actualValue.Should().BeEquivalentTo(expectedValue);
+    }
+
 }
