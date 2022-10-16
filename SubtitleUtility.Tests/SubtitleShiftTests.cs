@@ -100,21 +100,21 @@ public class SubtitleShiftTests
     [Test]
     public void ExecuteSubtitleShift_ShouldDisableSubtitleNumeration_WhenBoolParamIsFalse()
     {
-        var expectedValue = "00:02:24,896 --> 00:02:26,773" + Environment.NewLine + 
+        var expectedValue = "00:02:25,396 --> 00:02:27,273" + Environment.NewLine + 
                             "Master Kaecilius." + Environment.NewLine + 
                             "" + Environment.NewLine +
-                            "00:02:27,899 --> 00:02:31,745" + Environment.NewLine + 
+                            "00:02:28,399 --> 00:02:32,245" + Environment.NewLine + 
                             "That ritual will bring you only sorrow." + Environment.NewLine + 
                             "" + Environment.NewLine +
-                            "00:03:07,730 --> 00:03:08,947" + Environment.NewLine + 
+                            "00:03:08,230 --> 00:03:09,447" + Environment.NewLine + 
                             "Hypocrite!" + Environment.NewLine + 
                             "" + Environment.NewLine +
-                            "00:05:05,347 --> 00:05:06,690" + Environment.NewLine + 
+                            "00:05:05,847 --> 00:05:07,190" + Environment.NewLine + 
                             "Challenge round, Billy."; 
 
 
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
-                                                                -ShiftMs,
+                                                                0,
                                                                 DefaultTimeIntervalDelimiter,
                                                                 DefaultTimeIntervalDelimiter,
                                                                 !IsNumerationEnabled);
@@ -230,8 +230,24 @@ public class SubtitleShiftTests
     [Test]
     public void ExecuteSubtitleShift_ShouldNotConvertStringToAnyCase()
     {
-        var expectedValue = Input;
+        var expectedValue = "1" + Environment.NewLine + 
+                            "00:02:25,396 --> 00:02:27,273" + Environment.NewLine + 
+                            "Master Kaecilius." + Environment.NewLine + 
+                            "" + Environment.NewLine + 
+                            "2" + Environment.NewLine + 
+                            "00:02:28,399 --> 00:02:32,245" + Environment.NewLine + 
+                            "That ritual will bring you only sorrow." + Environment.NewLine + 
+                            "" + Environment.NewLine + 
+                            "3" + Environment.NewLine + 
+                            "00:03:08,230 --> 00:03:09,447" + Environment.NewLine + 
+                            "Hypocrite!" + Environment.NewLine + 
+                            "" + Environment.NewLine + 
+                            "4" + Environment.NewLine + 
+                            "00:05:05,847 --> 00:05:07,190" + Environment.NewLine + 
+                            "Challenge round, Billy.";
+        
         var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, 0);
+        
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
     

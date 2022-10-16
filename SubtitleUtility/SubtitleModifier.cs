@@ -52,7 +52,7 @@ public static class SubtitleModifier
                 startLineIndex = i-1;
             }
     
-            if (IsTimeInterval(source[i]) && ParseTimeLine(endTime) <= ParseTimeLine(source[i].Substring(17,12)))
+            if (IsTimeInterval(source[i]) && ParseTimeLine(endTime) <= ParseTimeLine(source[i].Substring(source[i].Length - 12)))
             {
                 endLineIndex = i+2;
                 break;
@@ -137,23 +137,11 @@ public static class SubtitleModifier
         return t.ToString(TimeFormat);
     }
 
-    private static bool IsTimeInterval(string input)
-    {
-        return Regex.IsMatch(input, TimeIntervalPattern);
-    }
+    private static bool IsTimeInterval(string input) => Regex.IsMatch(input, TimeIntervalPattern);
 
     private static string ParseDelimiter(string input) => input.Substring(13, 3);
 
-    private static TimeSpan ParseTimeLine(string input)
-    {
-        try
-        {
-            return TimeSpan.ParseExact(input, TimeFormat, CultureInfo.InvariantCulture);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
+    private static TimeSpan ParseTimeLine(string input) =>
+        TimeSpan.ParseExact(input, TimeFormat, CultureInfo.InvariantCulture);
+    
 }
