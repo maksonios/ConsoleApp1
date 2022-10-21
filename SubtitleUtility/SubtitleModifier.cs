@@ -137,7 +137,12 @@ public static class SubtitleModifier
         return t.ToString(TimeFormat);
     }
 
-    private static bool IsTimeInterval(string input) => Regex.IsMatch(input, TimeIntervalPattern);
+    private static bool IsTimeInterval(string? input)
+    {
+        if (input == null)
+            return false;
+        return Regex.IsMatch(input, TimeIntervalPattern);
+    }
 
     private static string ParseDelimiter(string input) => input.Substring(13, 3);
 
