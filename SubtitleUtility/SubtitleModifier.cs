@@ -28,16 +28,15 @@ public static class SubtitleModifier
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
 
-        ValidateTimeIntervalDelimiterConsistency(source, sourceTimeIntervalDelimiter);
-        
-        ReplaceTimeIntervalDelimiter(source, targetTimeIntervalDelimiter);
-
-        ExecuteSubtitleShiftWithoutNumeration(source, shiftMs, isSubtitleNumberingEnabled);
-        
-        SubtitleToCustomCase(source, variable);
+        for (var i = 0; i < source.Length - 1; i++)
+        {
+            ValidateTimeIntervalDelimiterConsistency(ref source[i], sourceTimeIntervalDelimiter, i+1);
+            ReplaceTimeIntervalDelimiter(ref source[i], targetTimeIntervalDelimiter);
+            ExecuteSubtitleShiftWithoutNumeration(ref source[i], source[i+1], shiftMs, isSubtitleNumberingEnabled);
+            SubtitleToCustomCase(ref source[i], variable);
+        }
         
         source = OutputSelectedTimeCodes(source, startTime, endTime);
-
         return string.Join(Environment.NewLine, source.Where(x => x != null));
     }
 
@@ -72,62 +71,50 @@ public static class SubtitleModifier
         return newSource;
     }
 
-    private static void SubtitleToCustomCase(string[] source, CaseSelection toUpper)
+    private static void SubtitleToCustomCase(ref string source, CaseSelection toUpper)
     {
-        for (var i = 0; i < source.Length; i++)
-        {
-            switch (toUpper)
+        switch (toUpper)
             {
-                case CaseSelection.Upper when !IsTimeInterval(source[i]):
+                case CaseSelection.Upper when !IsTimeInterval(source):
                 {
-                    source[i] = source[i].ToUpper();
+                    source = source.ToUpper();
                     break;
                 }
-                case CaseSelection.Lower when !IsTimeInterval(source[i]):
+                case CaseSelection.Lower when !IsTimeInterval(source):
                 {
-                    source[i] = source[i].ToLower();
+                    source = source.ToLower();
                     break;
                 }
             }
+    }
+
+    private static void ExecuteSubtitleShiftWithoutNumeration(ref string source, string timeInterval, int shiftMs, bool isSubtitleNumberingEnabled)
+    {
+        if (!isSubtitleNumberingEnabled && IsTimeInterval(timeInterval))
+        {
+            source = null!;
+            return;
+        }
+        if (IsTimeInterval(source))
+        {
+            var timeLine = TimeRegex.Replace(source, m => AddTime(m, shiftMs));
+            source = timeLine;
         }
     }
 
-    private static void ExecuteSubtitleShiftWithoutNumeration(string[] source, int shiftMs, bool isSubtitleNumberingEnabled)
+    private static void ValidateTimeIntervalDelimiterConsistency(ref string source, string sourceTimeIntervalDelimiter, int nonconsistentLine)
     {
-        for (var i = 0; i < source.Length-1; i++)
-        {
-            if (!isSubtitleNumberingEnabled && IsTimeInterval(source[i+1]))
-            {
-                source[i] = null!;
-                continue;
-            }
-            if (IsTimeInterval(source[i]))
-            {
-                var timeLine = TimeRegex.Replace(source[i], m => AddTime(m, shiftMs));
-                source[i] = timeLine;
-            }
-        }
+        if (IsTimeInterval(source) && ParseDelimiter(source) != sourceTimeIntervalDelimiter)
+                throw new InvalidDataException($"TimeIntervalDelimiterConsistency is not consistent across file. The subtitle line: #{nonconsistentLine}");
     }
 
-    private static void ValidateTimeIntervalDelimiterConsistency(string[] source, string sourceTimeIntervalDelimiter)
+    private static void ReplaceTimeIntervalDelimiter(ref string source, string targetTimeIntervalDelimiter)
     {
-        for (var i = 0; i < source.Length-1; i++)
-        {
-            if (IsTimeInterval(source[i]) && ParseDelimiter(source[i]) != sourceTimeIntervalDelimiter)
-                throw new InvalidDataException($"TimeIntervalDelimiterConsistency is not consistent across file. The subtitle line: #{i + 1}");
-        }
-    }
-
-    private static void ReplaceTimeIntervalDelimiter(string[] source, string targetTimeIntervalDelimiter)
-    {
-        for (var i = 0; i < source.Length-1; i++)
-        {
-            if (!IsTimeInterval(source[i]))
-                continue;
-            var delimiter = ParseDelimiter(source[i]);
-            var temp = source[i].Replace(delimiter, targetTimeIntervalDelimiter);
-            source[i] = temp;
-        }
+        if (!IsTimeInterval(source))
+                return;
+        var delimiter = ParseDelimiter(source);
+        var temp = source.Replace(delimiter, targetTimeIntervalDelimiter);
+        source = temp;
     }
 
     private static string AddTime(Match m, int shiftMs)
