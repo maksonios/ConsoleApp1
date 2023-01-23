@@ -4,7 +4,6 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
@@ -19,6 +18,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SubtitleUtility\SubtitleUtility.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="Doctor-Strange-2016.srt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
     
 </Project>

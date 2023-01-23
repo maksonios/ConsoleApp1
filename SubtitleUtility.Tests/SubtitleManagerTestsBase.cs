@@ -257,7 +257,7 @@ public abstract class SubtitleManagerTestsBase
     [Test]
     public void ExecuteSubtitleShift_ShouldCutRedundantTimeCodes()
     {
-        var input = File.ReadAllText(@"C:\Users\Maksym\Desktop\temp1\Doctor.Strange.2016.720p.BluRay.x264.[YTS.MX]-English.srt");
+        var input = File.ReadAllText("Doctor-Strange-2016.srt");
 
         var expectedValue = "23" + Environment.NewLine +
                             "00:05:48,932 --> 00:05:50,149" + Environment.NewLine +
