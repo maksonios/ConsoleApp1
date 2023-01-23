@@ -1,30 +1,23 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using SubtitleUtility.Interfaces;
 
-namespace SubtitleUtility;
+namespace SubtitleUtility.Services;
 
-public static class SubtitleModifier
+public class SubtitleModifier : ISubtitleManager
 {
-    private const string DefaultTimeIntervalDelimiter = "-->";
     private const string TimeFormat = @"hh\:mm\:ss\,fff";
     private static readonly Regex TimeRegex = new (TimeIntervalPattern);
     private const string TimeIntervalPattern = @"(\d\d):(\d\d):(\d\d),(\d\d\d)";
 
-    public enum CaseSelection
-    {
-        Upper,
-        Lower,
-        None
-    }
-
-    public static string ExecuteSubtitleShift(string input,
-                                              int shiftMs,
-                                              string sourceTimeIntervalDelimiter = DefaultTimeIntervalDelimiter, 
-                                              string targetTimeIntervalDelimiter = DefaultTimeIntervalDelimiter,
-                                              bool isSubtitleNumberingEnabled = true,
-                                              CaseSelection variable = CaseSelection.None,
-                                              string startTime = "00:00:00,000",
-                                              string endTime = "20:59:59,999")
+    public string ExecuteSubtitleShift(string input, 
+                                       int shiftMs,
+                                       string sourceTimeIntervalDelimiter = Consts.DefaultTimeIntervalDelimiter, 
+                                       string targetTimeIntervalDelimiter = Consts.DefaultTimeIntervalDelimiter,
+                                       bool isSubtitleNumberingEnabled = true,
+                                       CaseSelection variable = CaseSelection.None,
+                                       string startTime = "00:00:00,000",
+                                       string endTime = "20:59:59,999")
     {
         var source = Regex.Split(input, "\r\n|\r|\n");
 
@@ -135,5 +128,4 @@ public static class SubtitleModifier
 
     private static TimeSpan ParseTimeLine(string input) =>
         TimeSpan.ParseExact(input, TimeFormat, CultureInfo.InvariantCulture);
-    
 }

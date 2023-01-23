@@ -1,11 +1,14 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
+using SubtitleUtility.Interfaces;
 
 namespace SubtitleUtility.Tests;
 
 [TestFixture]
-public class SubtitleShiftTests
+public abstract class SubtitleManagerTestsBase
 {
+    protected abstract ISubtitleManager Sut { get; }
+
     private static readonly string Input = "1" + Environment.NewLine + 
                                            "00:02:25,396 --> 00:02:27,273" + Environment.NewLine + 
                                            "Master Kaecilius." + Environment.NewLine + 
@@ -44,7 +47,7 @@ public class SubtitleShiftTests
                             "00:05:06,347 --> 00:05:07,690" + Environment.NewLine + 
                             "Challenge round, Billy.";
 
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, ShiftMs);
+        var actualValue = Sut.ExecuteSubtitleShift(Input, ShiftMs);
 
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
@@ -68,7 +71,7 @@ public class SubtitleShiftTests
                             "00:05:05,347 --> 00:05:06,690" + Environment.NewLine + 
                             "Challenge round, Billy.";
 
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, -ShiftMs);
+        var actualValue = Sut.ExecuteSubtitleShift(Input, -ShiftMs);
 
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
@@ -92,7 +95,7 @@ public class SubtitleShiftTests
                             "00:05:05,347 --> 00:05:06,690" + Environment.NewLine + 
                             "Challenge round, Billy.";
 
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, -ShiftMs);
+        var actualValue = Sut.ExecuteSubtitleShift(Input, -ShiftMs);
 
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
@@ -113,11 +116,11 @@ public class SubtitleShiftTests
                             "Challenge round, Billy."; 
 
 
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
-                                                                0,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                !IsNumerationEnabled);
+        var actualValue = Sut.ExecuteSubtitleShift(Input, 
+                                                        shiftMs: 0,
+                                                        DefaultTimeIntervalDelimiter,
+                                                        DefaultTimeIntervalDelimiter,
+                                                        !IsNumerationEnabled);
 
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
@@ -141,7 +144,7 @@ public class SubtitleShiftTests
                     "00:05:05,347 --> 00:05:06,690" + Environment.NewLine +
                     "Challenge round, Billy.";
         
-        Assert.Throws<InvalidDataException>(() => SubtitleModifier.ExecuteSubtitleShift(value, -ShiftMs));
+        Assert.Throws<InvalidDataException>(() => Sut.ExecuteSubtitleShift(value, -ShiftMs));
     }
 
     [Test]
@@ -163,10 +166,10 @@ public class SubtitleShiftTests
                             "00:05:05,347 kurwa 00:05:06,690" + Environment.NewLine + 
                             "Challenge round, Billy.";
         
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
-                                                                -ShiftMs,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                "kurwa");
+        var actualValue = Sut.ExecuteSubtitleShift(Input, 
+                                                        -ShiftMs,
+                                                        sourceTimeIntervalDelimiter: DefaultTimeIntervalDelimiter,
+                                                        targetTimeIntervalDelimiter: "kurwa");
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
 
@@ -190,12 +193,12 @@ public class SubtitleShiftTests
                             "CHALLENGE ROUND, BILLY.";
         
 
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
-                                                                0,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                "kurwa",
-                                                                true,
-                                                                SubtitleModifier.CaseSelection.Upper);
+        var actualValue = Sut.ExecuteSubtitleShift(Input, 
+                                                        shiftMs: 0,
+                                                        sourceTimeIntervalDelimiter: DefaultTimeIntervalDelimiter,
+                                                        targetTimeIntervalDelimiter: "kurwa",
+                                                        isSubtitleNumberingEnabled: true,
+                                                        CaseSelection.Upper);
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
     
@@ -218,12 +221,12 @@ public class SubtitleShiftTests
                             "00:05:05,847 KURWA 00:05:07,190" + Environment.NewLine + 
                             "challenge round, billy.";
         
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input,
-                                                                0,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                "KURWA",
-                                                                true,
-                                                                SubtitleModifier.CaseSelection.Lower);
+        var actualValue = Sut.ExecuteSubtitleShift(Input,
+                                                        shiftMs: 0, 
+                                                        DefaultTimeIntervalDelimiter,
+                                                        "KURWA",
+                                                        true,
+                                                        CaseSelection.Lower);
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
 
@@ -246,7 +249,7 @@ public class SubtitleShiftTests
                             "00:05:05,847 --> 00:05:07,190" + Environment.NewLine + 
                             "Challenge round, Billy.";
         
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(Input, 0);
+        var actualValue = Sut.ExecuteSubtitleShift(Input, 0);
         
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
@@ -273,14 +276,14 @@ public class SubtitleShiftTests
                             "00:05:54,271 --> 00:05:55,443" + Environment.NewLine +
                             "GSW.";
 
-        var actualValue = SubtitleModifier.ExecuteSubtitleShift(input,
-                                                                0,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                DefaultTimeIntervalDelimiter,
-                                                                true,
-                                                                SubtitleModifier.CaseSelection.None,
-                                                                "00:05:48,932",
-                                                                "00:05:55,443");
+        var actualValue = Sut.ExecuteSubtitleShift(input, 
+                                                        0,
+                                                        DefaultTimeIntervalDelimiter,
+                                                        DefaultTimeIntervalDelimiter,
+                                                        true,
+                                                        CaseSelection.None,
+                                                        "00:05:48,932",
+                                                        "00:05:55,443");
 
         actualValue.Should().BeEquivalentTo(expectedValue);
     }
